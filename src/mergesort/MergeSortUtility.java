@@ -2,11 +2,21 @@ package mergesort;
 
 import java.util.Arrays;
 
+/**
+ * Class that runs Merge Sort on a list of integers passed in via command line.
+ *
+ */
 public class MergeSortUtility {
-
+    /**
+     * Sorts the given list of integers via Merge Sort. Any integer is a valid
+     * input. If any non-integer input is given, the program will not be run.
+     * 
+     * @param args
+     *            the array containing the console input
+     */
     public static void main(String[] args) {
 	Integer[] array_to_sort;
-	
+
 	// Validate input
 	try {
 	    array_to_sort = validateArgs(args);
@@ -18,15 +28,10 @@ public class MergeSortUtility {
 	    return;
 	}
 
-
-	System.out.println(Arrays.asList(array_to_sort));
-	Comparable[] sorted = MergeSortUtility.nonRecSort(array_to_sort);
+	// Sort array
+	Integer[] sorted = MergeSortUtility.nonRecSort(array_to_sort);
+	// Print sorted array
 	System.out.println(Arrays.asList(sorted));
-
-	Integer[] testArray = { 12, 60, 32, 44, 30, 99, 3, 39, 15, 18, 100, 5 };
-	System.out.println(Arrays.asList(testArray));
-	Comparable[] sortedTestArray = MergeSortUtility.nonRecSort(testArray);
-	System.out.println(Arrays.asList(sortedTestArray));
     }
 
     /**
@@ -40,7 +45,7 @@ public class MergeSortUtility {
 	// Verify that there is at least one command-line argument
 	if (args.length < 1) {
 	    throw new IllegalArgumentException(
-		    "At least one paramter is required");
+		    "At least one parameter is required.");
 	}
 
 	// Create array to hold triangle sides
@@ -55,8 +60,24 @@ public class MergeSortUtility {
 	return array_to_sort;
     }
 
-    private static Comparable[] merge(Comparable[] array, Comparable[] sorted,
-	    int first, int mid, int last) {
+    /**
+     * Helper method for the Merge Sort algorithm. Sorts a section of the array
+     * using the given indexes.
+     * 
+     * @param array
+     *            the array being sorted
+     * @param sorted
+     *            the sorted version of 'array'
+     * @param first
+     *            the beginning index of the sort
+     * @param mid
+     *            the midpoint index of the sort
+     * @param last
+     *            the last index of the sort
+     * @return the 'sorted' array with the given section sorted
+     */
+    private static Integer[] merge(Integer[] array, Integer[] sorted, int first,
+	    int mid, int last) {
 	int beginHalf1 = first;
 	int endHalf1 = mid;
 	int beginHalf2 = mid + 1;
@@ -78,27 +99,24 @@ public class MergeSortUtility {
 	return sorted;
     }
 
-    public static <T extends Comparable> Comparable[] sort(T[] array) {
-	int size = array.length;
-	Comparable[] sorted = new Comparable[size];
-	for (int i = 1; i < size; i *= 2) {
-	    for (int lo = 0; lo < size - i; lo += i) {
-		// array = (T[]) merge(array, sorted, lo, lo + i - 1,
-		// Math.min(lo + i + i - 1, size - 1));
-	    }
-	}
-	return array;
-    }
-
-    @SuppressWarnings("unchecked")
-    public static <T extends Comparable> T[] nonRecSort(T[] array) {
+    /**
+     * Sorts the given array using the merge sort algorithm
+     * 
+     * @param array
+     *            the array to sort
+     * @return the sorted array
+     */
+    public static Integer[] nonRecSort(Integer[] array) {
 	int size = array.length;
 	for (int partitionSize = 0; partitionSize <= size; partitionSize *= 2) {
 	    partitionSize++;
-	    Comparable[] temp = new Comparable[size];
+	    Integer[] temp = new Integer[size];
 	    int first = 0;
-	    int last = 0; // Initialized here to handle extra elements not
-			  // covered by partitions
+	    /*
+	     * 'last' initialized here to handle extra elements not covered by
+	     * partitions
+	     */
+	    int last = 0;
 	    int mid = 0;
 	    while (first <= size) {
 		last = first + partitionSize;
@@ -107,32 +125,26 @@ public class MergeSortUtility {
 		}
 		mid = (last + first) / 2;
 
-		temp = (T[]) merge(array, temp, first, mid, last);
+		temp = merge(array, temp, first, mid, last);
 
 		first += partitionSize + 1;
 	    }
-	    array = (T[]) Arrays.copyOf(temp, size);
+	    array = Arrays.copyOf(temp, size);
 
 	    if (first != size) {
-		mid = (first - partitionSize - 1) - 1; // set division to end of
-						       // last complete
-						       // partition
-		first = first - 2 * partitionSize - 2; // reset to index at
-						       // beginning of last
-						       // complete partition
-		last = size - 1; // set to the last array element
+		// Set division to end of last complete partition
+		mid = (first - partitionSize - 1) - 1;
+		// Reset to index at beginning of last complete partition
+		first = first - 2 * partitionSize - 2;
+		// Set to the last array element
+		last = size - 1;
 		if (first < 0) {
 		    continue;
 		}
-		temp = (T[]) merge(array, temp, first, mid, last);
-		array = (T[]) temp;
+		temp = merge(array, temp, first, mid, last);
+		array = temp;
 	    }
 	}
-	// array = temp;
 	return array;
-    }
-
-    private static <T extends Comparable> boolean less(T v, T w) {
-	return v.compareTo(w) < 0;
     }
 }
